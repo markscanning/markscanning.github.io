@@ -1,130 +1,47 @@
 <template>
-    <div id="browser">
-      <div id="webHead">
-        <h1>
-          X-Scanning Data Corpus
-        </h1>
-      </div>
-      <div id="selection">
-        <div id="display" class="buttons">
-          <p class="select-title">
-            Display
-          </p>
-          <button v-for="value in uniqueValues.Display" :key="value" :class="{ selected: isSelected('Display', value) }"
-            @click="toggleFilter('Display', value)">
-            {{ value }}
-          </button>
-        </div>
+  <div id="browser">
+    <div id="webHead">
+      <h1>
+        X-Scanning Data Corpus
+      </h1>
+    </div>
+    <div id="filterMenu">
+      <p>Case Filters</p>
+      <transition name="button-fade">
+        <button @click="clearAllFilter" class="clear-filter-button">Clear All Filters</button>
+      </transition>
+      <div v-for="(values, category) in uniqueValues" :key="category" class="buttons">
+        <p class="select-title">
+          {{ categoryDisplayNames[category] }}
+          <transition name="button-fade">
+          <button @click="clearFilter(category)" class="clear-filter-button">Clear filter</button>
+          </transition>
+        </p>
 
-        <div id="locomotion" class="buttons">
-          <p class="select-title">
-            Locomotion
-          </p>
-          <button v-for="value in uniqueValues.Locomotion" :key="value"
-            :class="{ selected: isSelected('Locomotion', value) }" @click="toggleFilter('Locomotion', value)">
-            {{ value }}
-          </button>
-        </div>
-
-        <div id="bodyMovement" class="buttons">
-          <p class="select-title">
-            BodyMovement
-          </p>
-          <button v-for="value in uniqueValues.BodyMovement" :key="value"
-            :class="{ selected: isSelected('BodyMovement', value) }" @click="toggleFilter('BodyMovement', value)">
-            {{ value }}
-          </button>
-        </div>
-
-        <div id="marktype" class="buttons">
-          <p class="select-title">
-            Mark Types
-          </p>
-          <button v-for="value in uniqueValues.MarkType" :key="value"
-            :class="{ selected: isSelected('MarkType', value) }" @click="toggleFilter('MarkType', value)">
-            {{ value }}
-          </button>
-        </div>
-
-        <div id="encoding" class="buttons">
-          <p class="select-title">
-            Encoding Channel
-          </p>
-          <button v-for="value in uniqueValues.EncodingChannel" :key="value"
-            :class="{ selected: isSelected('EncodingChannel', value) }" @click="toggleFilter('EncodingChannel', value)">
-            {{ value }}
-          </button>
-        </div>
-
-        <div id="movingSubjects" class="buttons">
-          <p class="select-title">
-            Moving Subjects
-          </p>
-          <button v-for="value in uniqueValues.MovingSubjects" :key="value"
-            :class="{ selected: isSelected('MovingSubjects', value) }" @click="toggleFilter('MovingSubjects', value)">
-            {{ value }}
-          </button>
-        </div>
-
-        <div id="progressReview" class="buttons">
-          <p class="select-title">
-            Progress Review
-          </p>
-          <button v-for="value in uniqueValues.ProgressReview" :key="value"
-            :class="{ selected: isSelected('ProgressReview', value) }" @click="toggleFilter('ProgressReview', value)">
-            {{ value }}
-          </button>
-        </div>
-
-        <div id="locusofControl" class="buttons">
-          <p class="select-title">
-            Locus of Control
-          </p>
-          <button v-for="value in uniqueValues.LocusofControl" :key="value"
-            :class="{ selected: isSelected('LocusofControl', value) }" @click="toggleFilter('LocusofControl', value)">
-            {{ value }}
-          </button>
-        </div>
-
-        <div id="skippingTool" class="buttons">
-          <p class="select-title">
-            Skipping Tool
-          </p>
-          <button v-for="value in uniqueValues.SkippingTool" :key="value"
-            :class="{ selected: isSelected('SkippingTool', value) }" @click="toggleFilter('SkippingTool', value)">
-            {{ value }}
-          </button>
-        </div>
-
-        <div id="anchor" class="buttons">
-          <p class="select-title">
-            Anchor
-          </p>
-          <button v-for="value in uniqueValues.Anchor" :key="value" :class="{ selected: isSelected('Anchor', value) }"
-            @click="toggleFilter('Anchor', value)">
-            {{ value }}
-          </button>
-        </div>
-
-      </div>
-      <div id="case-container">
-        <div v-if="filteredCases.length > 0">
-          <div v-for="(caseItem, index) in filteredCases" :key="index" class="case-item">
-            <div v-if="caseItem.IsMarkScan">
-              <h4>{{ caseItem.Title }}</h4>
-              <p>
-                <a v-if="caseItem.CaseURL" target="_blank" :href="caseItem.CaseURL">Case URL</a>
-              </p>
-              <p v-if="caseItem.ShortDes">
-                {{ caseItem.ShortDes }}
-              </p>
-              <img v-if="caseItem.Image" style="width: 100%;" :src="`images/${caseItem.Image}.png`">
-            </div>
-          </div>
-        </div>
-        <p v-else>No cases match the selected filters.</p>
+        <button v-for="value in values" :key="value" :class="{ selected: isSelected(category, value) }"
+          @click="toggleFilter(category, value)">
+          {{ value }}
+        </button>
       </div>
     </div>
+    <div id="case-container">
+      <div v-if="filteredCases.length > 0">
+        <div v-for="(caseItem, index) in filteredCases" :key="index" class="case-item">
+          <div v-if="caseItem.IsMarkScan">
+            <h4>{{ caseItem.Title }}</h4>
+            <p>
+              <a v-if="caseItem.CaseURL" target="_blank" :href="caseItem.CaseURL">Case URL</a>
+            </p>
+            <p v-if="caseItem.ShortDes">
+              {{ caseItem.ShortDes }}
+            </p>
+            <img v-if="caseItem.Image" style="width: 100%;" :src="`images/${caseItem.Image}.png`">
+          </div>
+        </div>
+      </div>
+      <p v-else>No cases match the selected filters.</p>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -135,6 +52,18 @@ export default {
   name: "Browser",
   data() {
     return {
+      categoryDisplayNames: {
+        Display: "Display",
+        Locomotion: "Locomotion",
+        BodyMovement: "Body Movement",
+        MarkType: "Mark Types",
+        EncodingChannel: "Encoding Channel",
+        MovingSubjects: "Moving Subjects",
+        ProgressReview: "Progress Review",
+        LocusofControl: "Locus of Control",
+        SkippingTool: "Skipping Tool",
+        Anchor: "Anchor"
+      },
       cases: [], // Holds the processed data
       filters: reactive({}), // Use reactive for managing filters
     };
@@ -162,7 +91,6 @@ export default {
         );
         uniqueValues[column] = [...new Set(values)]; // Ensure uniqueness
       });
-      console.log(uniqueValues);
       return uniqueValues;
     },
     // Compute filtered cases based on selected filters
@@ -170,7 +98,7 @@ export default {
       return this.cases.filter((caseItem) => {
         return Object.keys(this.filters).every((column) => {
           const selectedValues = this.filters[column] || [];
-          if (selectedValues.length === 0) return true;
+          if (selectedValues.length === 0) return true; // if this.fitlers[column] is empty, no case would be fiterred based on selections in this column
           const caseValues = caseItem[column]
             ? caseItem[column].split(",").map((v) => v.trim())
             : [];
@@ -182,7 +110,7 @@ export default {
   methods: {
     // Check if a value is selected for a column
     isSelected(column, value) {
-      return this.filters[column]?.includes(value);
+      return this.filters[column]?.includes(value) || false;
     },
     // Toggle a filter value
     toggleFilter(column, value) {
@@ -194,6 +122,20 @@ export default {
         this.filters[column].splice(index, 1); // Remove the value
       } else {
         this.filters[column].push(value); // Add the value
+      }
+    },
+    // Clear filters
+    clearFilter(column) {
+      if (!this.filters[column]) {
+        this.filters[column] = []; // Initialize the column array if undefined
+      }
+      this.filters[column] = [];
+      //this.filters[column] = [...this.uniqueValues[column]];
+    },
+    // Clear all filters
+    clearAllFilter() {
+      for (let column in this.filters) {
+        this.filters[column] = []; // Empty the array for each column
       }
     },
     // Function to load and parse the CSV file
@@ -228,7 +170,7 @@ export default {
 
 <style scoped>
 /* position website head */
-#webHead{
+#webHead {
   position: fixed;
   top: 0;
   left: 0;
@@ -239,23 +181,28 @@ export default {
   padding: 20px;
   color: white;
 }
+
 /* position selection menu */
-#selection{
+#filterMenu {
   position: fixed;
   top: 80px;
   left: 0;
   z-index: 1030;
   width: 30%;
+  height: 100%;
   padding-left: 20px;
   padding-top: 20px;
+  overflow-y: auto;
 }
+
 /* position case containers */
-#browser{
+#browser {
   font-family: Arial, sans-serif;
   margin-top: 80px;
   margin-left: 30%;
   padding-top: 20px;
 }
+
 /* styles of selection menu and buttons */
 .buttons {
   margin-bottom: 10px;
@@ -273,7 +220,7 @@ button {
 }
 
 button.selected {
-  background-color: blue;
+  background-color: #3a99d5;
   color: white;
 }
 
@@ -285,5 +232,35 @@ button.selected {
   border-radius: 4px;
   font-family: monospace;
   white-space: pre-wrap;
+}
+
+/* Transition effects */
+.button-fade-enter-active,
+.button-fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.button-fade-enter,
+.button-fade-leave-to {
+  opacity: 0;
+}
+
+/* Common styles for all clear filter buttons */
+.clear-filter-button {
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Hover effect for buttons */
+.clear-filter-button:hover {
+  background-color: #3a99d5;
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Active effect when the button is clicked */
+.clear-filter-button:active {
+  transform: scale(0.9);
 }
 </style>
