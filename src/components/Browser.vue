@@ -10,14 +10,14 @@
       <transition name="button-fade">
         <button @click="clearAllFilter" class="clear-filter-button">Clear All Filters</button>
       </transition>
-      <div v-for="(values, category) in uniqueValues" :key="category" class="buttons">
+      <div v-for="(values, category) in uniqueValues" :key="category" class="buttons"
+        :style="{ borderLeft: `5px solid ${categoryDisplayInfo[category][1]}` }">
         <p class="select-title">
-          {{ categoryDisplayNames[category] }}
+          {{ categoryDisplayInfo[category][0] }}
           <transition name="button-fade">
-          <button @click="clearFilter(category)" class="clear-filter-button">Clear filter</button>
+            <button @click="clearFilter(category)" class="clear-filter-button">Clear filter</button>
           </transition>
         </p>
-
         <button v-for="value in values" :key="value" :class="{ selected: isSelected(category, value) }"
           @click="toggleFilter(category, value)">
           {{ value }}
@@ -26,16 +26,23 @@
     </div>
     <div id="case-container">
       <div v-if="filteredCases.length > 0">
-        <div v-for="(caseItem, index) in filteredCases" :key="index" class="case-item">
-          <div v-if="caseItem.IsMarkScan">
-            <h4>{{ caseItem.Title }}</h4>
-            <p>
-              <a v-if="caseItem.CaseURL" target="_blank" :href="caseItem.CaseURL">Case URL</a>
-            </p>
-            <p v-if="caseItem.ShortDes">
-              {{ caseItem.ShortDes }}
-            </p>
-            <img v-if="caseItem.Image" style="width: 100%;" :src="`images/${caseItem.Image}.png`">
+        <div v-for="(caseItem, index) in filteredCases" :key="index">
+          <div v-if="caseItem.IsMarkScan" class="case-item row">
+            <div class="case-info">
+              <h4>{{ caseItem.Title }}</h4>
+              <p>
+                <a v-if="caseItem.CaseURL" target="_blank" :href="caseItem.CaseURL">Case URL</a>
+              </p>
+              <p v-if="caseItem.ShortDes">
+                {{ caseItem.ShortDes }}
+              </p>
+              <img v-if="caseItem.Image" style="width: 100%;" :src="`images/${caseItem.Image}.png`">
+            </div>
+            <div v-for="(categoryInfo, category) in categoryDisplayInfo" :key="category" class="tag"
+              :style="{ borderLeft: `5px solid ${categoryInfo[1]}` }">
+              <div class="tag-name">{{ categoryInfo[0] }}</div>
+              <div class="tag-value">{{ caseItem[category] }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -52,17 +59,17 @@ export default {
   name: "Browser",
   data() {
     return {
-      categoryDisplayNames: {
-        Display: "Display",
-        Locomotion: "Locomotion",
-        BodyMovement: "Body Movement",
-        MarkType: "Mark Types",
-        EncodingChannel: "Encoding Channel",
-        MovingSubjects: "Moving Subjects",
-        ProgressReview: "Progress Review",
-        LocusofControl: "Locus of Control",
-        SkippingTool: "Skipping Tool",
-        Anchor: "Anchor"
+      categoryDisplayInfo: {
+        Display: ["Display", "#F9468C"],
+        Locomotion: ["Locomotion", "#F80F19"],
+        BodyMovement: ["Body Movement", "#FF8000"],
+        MarkType: ["Mark Types", "#F3D027"],
+        EncodingChannel: ["Encoding Channel", "#23BF0C"],
+        MovingSubjects: ["Moving Subjects", "#5A922D"],
+        ProgressReview: ["Progress Review", "#B7DE55"],
+        LocusofControl: ["Locus of Control", "#8AD2F1"],
+        SkippingTool: ["Skipping Tool", "#32BFF2"],
+        Anchor: ["Anchor", "#00BEB9"]
       },
       cases: [], // Holds the processed data
       filters: reactive({}), // Use reactive for managing filters
@@ -189,10 +196,10 @@ export default {
   left: 0;
   z-index: 1030;
   width: 30%;
-  height: 80%;
+  height: 100%;
   padding-left: 20px;
   padding-top: 20px;
-  padding-bottom: 20px;
+  padding-bottom: 100px;
   overflow-y: auto;
 }
 
@@ -263,5 +270,45 @@ button.selected {
 /* Active effect when the button is clicked */
 .clear-filter-button:active {
   transform: scale(0.9);
+}
+
+/* Container for the tags */
+.case-tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  /* Align the tags on the right side */
+}
+
+/* Each tag */
+.tag {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+  padding: 5px;
+  background-color: #fff;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  width: 150px;
+  /* Adjust as necessary */
+}
+
+/* Tag name styling (column name) */
+.tag-name {
+  font-size: 0.5rem;
+  color: #555;
+  margin-bottom: 2px;
+}
+
+/* Tag value styling (real value) */
+.tag-value {
+  font-size: 0.8rem;
+  color: #333;
+}
+
+/* Style for the left border of the tag */
+.tag {
+  border-left: 5px solid transparent;
+  /* Initially transparent, color applied dynamically */
 }
 </style>
