@@ -189,9 +189,10 @@ export default {
   left: 0;
   z-index: 1030;
   width: 30%;
-  height: 100%;
+  height: 80%;
   padding-left: 20px;
   padding-top: 20px;
+  padding-bottom: 20px;
   overflow-y: auto;
 }
 
