@@ -36,7 +36,7 @@
               <p v-if="caseItem.ShortDes">
                 {{ caseItem.ShortDes }}
               </p>
-              <img v-if="caseItem.Image" style="width: 100%;" :src="`images/${caseItem.Image}.png`">
+              <img v-if="caseItem.Image" style="max-width: 100%; max-height: 500px;" :src="`images/${caseItem.Image}.png`">
             </div>
             <div v-for="(categoryInfo, category) in categoryDisplayInfo" :key="category" class="tag"
               :style="{ borderLeft: `5px solid ${categoryInfo[1]}` }">
