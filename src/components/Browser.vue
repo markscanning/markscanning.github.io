@@ -1,9 +1,9 @@
 <template>
   <div id="browser">
     <div id="webHead">
-      <h1>
-        X-Scanning Data Corpus
-      </h1>
+      <h2>
+        X-Scanning Corpus
+      </h2>
     </div>
     <div id="filterMenu">
       <p>Case Filters</p>
@@ -36,13 +36,18 @@
               <p v-if="caseItem.ShortDes">
                 {{ caseItem.ShortDes }}
               </p>
-              <img v-if="caseItem.Image" style="max-width: 100%; max-height: 500px;" :src="`images/${caseItem.Image}.png`">
+              <img v-if="caseItem.Image" style="max-width: 100%; max-height: 500px;"
+                :src="`images/${caseItem.Image}.png`">
             </div>
-            <div v-for="(categoryInfo, category) in categoryDisplayInfo" :key="category" class="tag"
-              :style="{ borderLeft: `5px solid ${categoryInfo[1]}` }">
-              <div class="tag-name">{{ categoryInfo[0] }}</div>
-              <div class="tag-value">{{ caseItem[category] }}</div>
+            <!-- tags -->
+            <div class="case-tags">
+              <div v-for="(categoryInfo, category) in categoryDisplayInfo" :key="category" class="tag"
+                :style="{ borderLeft: `5px solid ${categoryInfo[1]}` }">
+                <div class="tag-name">{{ categoryInfo[0] }}</div>
+                <div class="tag-value">{{ caseItem[category] }}</div>
+              </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -177,6 +182,7 @@ export default {
 
 <style scoped>
 /* position website head */
+
 #webHead {
   position: fixed;
   top: 0;
@@ -184,9 +190,9 @@ export default {
   z-index: 1030;
   width: 100%;
   height: 80px;
-  background-color: cadetblue;
+  background-color: white; /* Make background transparent */
   padding: 20px;
-  color: white;
+  color: #333;
 }
 
 /* position selection menu */
@@ -208,12 +214,15 @@ export default {
   font-family: Arial, sans-serif;
   margin-top: 80px;
   margin-left: 30%;
+  margin-right: 20px;
   padding-top: 20px;
 }
 
 /* styles of selection menu and buttons */
 .buttons {
+  padding-left:5px;
   margin-bottom: 10px;
+  border-radius: 4px;
   text-align: left;
 }
 
@@ -275,17 +284,16 @@ button.selected {
 /* Container for the tags */
 .case-tags {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  /* Align the tags on the right side */
+  flex-direction: row;
+  padding: 10px;
 }
 
 /* Each tag */
 .tag {
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
   margin-top: 5px;
-  padding: 5px;
+  padding: 10px;
   background-color: #fff;
   border-radius: 5px;
   font-size: 0.8rem;
