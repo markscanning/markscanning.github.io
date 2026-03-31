@@ -101,7 +101,7 @@ export default {
         Anchor_Representation: ["Anchor (Representation)", "#DE8DAF"],
         Anchor_Space: ["Anchor (Space)", "#DE8DAF"],
         Narrative: ["Narrative", "#DE8DAF"],
-        General_Startegies: ["General Startegies", "#00BEB9"]
+        Motion_Startegies: ["Motion Startegies", "#00BEB9"]
       },
       cases: [],
       filters: reactive({}),
@@ -122,7 +122,7 @@ export default {
         "Anchor_Representation",
         "Anchor_Space",
         "Narrative",
-        "General_Startegies"
+        "Motion_Startegies"
       ];
       const uniqueValues = {};
       columns.forEach((column) => {
